@@ -1,0 +1,12 @@
+{
+  "experiment_id": "dominant_dominant-1_20251004_155336",
+  "problem_type": "dominant",
+  "timestamp": "20251004_155336",
+  "results": {
+    "mPSO": {
+      "costs": [],
+      "runtimes": [],
+      "convergence": []
+    }
+  }
+}

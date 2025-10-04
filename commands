@@ -1,0 +1,65 @@
+git clone https://github.com/your-username/manifold-optimization-comparison.git
+cd manifold-optimization-comparison
+pip install -r requirements.txt
+
+# Thomson problem (as in Table 3)
+python main.py --problem thomson --datafile thomson-n50-d3-1 --runs 21 --population 100 --iterations 800
+
+# Dominant invariant subspace (Table 5)  
+python main.py --problem dominant --datafile dominant-n128-p3-1 --runs 21 --population 100 --iterations 800
+
+# SDP problem (Table 4)
+python main.py --problem sdp --datafile sdp-n100-p? --runs 21 --population 100 --iterations 800
+
+# Truncated SVD (Table 6)
+python main.py --problem svd --datafile svd-n42-m60-p5-1 --runs 21 --population 100 --iterations 800
+
+# Procrustes (Table 7)
+python main.py --problem procrustes --datafile procrustes-n3m10N50-1 --runs 21 --population 100 --iterations 800
+
+# Exact paper configuration
+PAPER_CONFIG = {
+    'num_runs': 21,
+    'population_size': 100,  # pn = 100 in paper
+    'max_iterations': 800,   # maxit = 800 in paper
+    'algorithms': ['mPSO', 'mDE', 'mSMANN', 'mDTMA', 'conjugate_gradient', 'trust_regions'],
+    
+    # Algorithm-specific parameters from paper
+    'mPSO': {'w': 0.729, 'c1': 1.494, 'c2': 1.494},
+    'mDE': {'F': 0.5, 'CR': 0.9},
+    'mSMANN': {'initial_temperature': 100.0, 'cooling_rate': 0.95},
+    'mDTMA': {'w0': 0.1},  # For Thomson, Dominant, SVD problems
+    'RICA': {
+        'num_imperialists': 12,  # 100 * 0.125 = 12.5 ≈ 12
+        'assimilation_coef': 0.7,
+        'revolution_rate': 0.3,
+        'assimilation_gamma': 0.1
+    }
+}
+
+# Problem-specific settings from paper
+PROBLEM_CONFIGS = {
+    'thomson': {
+        'datasets': ['n=50', 'n=75', 'n=100', 'n=125', 'n=150'],
+        'd_ambient': 3,
+        'mDTMA_w0': 0.1
+    },
+    'dominant': {
+        'n': 128, 'p': 3,  # A is 128×128, p=3
+        'mDTMA_w0': 0.1
+    },
+    'sdp': {
+        'n': 100, 'p': 'unknown',  # A is 100×100
+        'mDTMA_w0': 0.1  
+    },
+    'svd': {
+        'n': 42, 'm': 60, 'p': 5,  # A is 42×60, p=5
+        'mDTMA_w0': 0.1
+    },
+    'procrustes': {
+        'mDTMA_w0': 0.4  # Other problems use 0.4
+    },
+    'stiffness': {
+        'mDTMA_w0': 0.4  # Tuned within 10 values for 500-time slot
+    }
+}
